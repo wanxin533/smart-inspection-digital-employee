@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/work-orders")
+@RequestMapping("/api/work-orders")
 public class WorkOrderController {
 
     @Autowired

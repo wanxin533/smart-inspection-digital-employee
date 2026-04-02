@@ -47,6 +47,12 @@ const routes = [
     name: 'Scenarios',
     component: () => import('@/views/Scenarios/Index.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/scenarios/detail',
+    name: 'ScenariosDetail',
+    component: () => import('@/views/Scenarios/Detail.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
