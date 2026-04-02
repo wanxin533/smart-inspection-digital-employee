@@ -1,0 +1,77 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: smart-inspection-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: smart_inspection
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./config/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql
+    networks:
+      - smart-inspection
+
+  redis:
+    image: redis:7.0
+    container_name: smart-inspection-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - smart-inspection
+
+  backend:
+    build: ./src/backend
+    container_name: smart-inspection-backend
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/smart_inspection
+      SPRING_REDIS_HOST: redis
+    networks:
+      - smart-inspection
+
+  frontend:
+    build: ./src/frontend
+    container_name: smart-inspection-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: on-failure
+    networks:
+      - smart-inspection
+
+  model-server:
+    build: ./model-server
+    container_name: smart-inspection-model-server
+    ports:
+      - "8000:8000"
+    networks:
+      - smart-inspection
+    profiles:
+      - full
+
+  neo4j:
+    image: neo4j:5
+    container_name: smart-inspection-neo4j
+    environment:
+      NEO4J_AUTH: neo4j/admin123
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    networks:
+      - smart-inspection
+    profiles:
+      - full
+
+volumes:
+  mysql-data:
+
+networks:
+  smart-inspection:
+    driver: bridge

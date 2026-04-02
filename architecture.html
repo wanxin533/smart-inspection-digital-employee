@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技术架构 - 智能巡视数字员工</title>
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        body { background: #f5f7fa; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        .page-title { font-size: 32px; color: #333; margin-bottom: 40px; }
+        .section { background: white; border-radius: 10px; padding: 40px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section-title { font-size: 24px; color: #333; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        .architecture-layers { display: flex; flex-direction: column; gap: 20px; }
+        .layer { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; padding: 25px; position: relative; }
+        .layer-name { font-size: 20px; font-weight: bold; margin-bottom: 15px; }
+        .layer-components { display: flex; flex-wrap: wrap; gap: 10px; }
+        .component { background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 20px; font-size: 14px; }
+        .layer-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .layer-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .layer-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .layer-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .layer-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .data-flow { margin-top: 40px; }
+        .flow-diagram { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center; }
+        .flow-step { background: white; border: 2px solid #667eea; border-radius: 10px; padding: 20px 30px; text-align: center; min-width: 150px; }
+        .flow-step-number { font-size: 36px; font-weight: bold; color: #667eea; margin-bottom: 10px; }
+        .flow-step-title { font-size: 16px; color: #333; font-weight: bold; }
+        .flow-arrow { font-size: 32px; color: #667eea; }
+        .core-tech { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 30px; }
+        .tech-card { background: #f9f9f9; border-radius: 10px; padding: 25px; border-left: 4px solid #667eea; }
+        .tech-icon { font-size: 48px; margin-bottom: 15px; }
+        .tech-title { font-size: 18px; color: #333; font-weight: bold; margin-bottom: 10px; }
+        .tech-desc { color: #666; line-height: 1.8; font-size: 14px; }
+        .tech-list { list-style: none; margin-top: 15px; }
+        .tech-list li { padding: 5px 0; color: #555; font-size: 14px; }
+        .tech-list li:before { content: "✓ "; color: #52c41a; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html" class="navbar-logo">
+                🤖 智能巡视数字员工
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html">🏠 首页</a></li>
+                <li><a href="monitor.html">👁️ 系统监盘</a></li>
+                <li><a href="robot.html">🤖 机器人操控</a></li>
+                <li><a href="interaction.html">🧠 用户交互</a></li>
+                <li><a href="architecture.html" class="active">🏗️ 技术架构</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">🏗️ 技术架构</h1>
+
+        <div class="section">
+            <h2 class="section-title">📐 五层分层架构</h2>
+            <div class="architecture-layers">
+                <div class="layer layer-1">
+                    <div class="layer-name">🖥️ 用户交互层</div>
+                    <div class="layer-components">
+                        <span class="component">钉钉小程序</span>
+                        <span class="component">Web 控制台</span>
+                        <span class="component">移动 APP</span>
+                        <span class="component">语音交互</span>
+                    </div>
+                </div>
+
+                <div class="layer layer-2">
+                    <div class="layer-name">🧠 交互中枢层（OpenClaw 多 Agent）</div>
+                    <div class="layer-components">
+                        <span class="component">监盘 Agent</span>
+                        <span class="component">机器人 Agent</span>
+                        <span class="component">交互 Agent</span>
+                        <span class="component">事件总线</span>
+                        <span class="component">任务编排</span>
+                    </div>
+                </div>
+
+                <div class="layer layer-3">
+                    <div class="layer-name">⚙️ 能力服务层</div>
+                    <div class="layer-components">
+                        <span class="component">数据分析服务</span>
+                        <span class="component">知识库检索</span>
+                        <span class="component">AI 推理引擎</span>
+                        <span class="component">报告生成</span>
+                        <span class="component">告警服务</span>
+                    </div>
+                </div>
+
+                <div class="layer layer-4">
+                    <div class="layer-name">🔌 CLI 集成层</div>
+                    <div class="layer-components">
+                        <span class="component">生产管理系统 CLI</span>
+                        <span class="component">宇树机器人 CLI</span>
+                        <span class="component">标准适配器</span>
+                        <span class="component">命令解析器</span>
+                    </div>
+                </div>
+
+                <div class="layer layer-5">
+                    <div class="layer-name">🗄️ 外部系统层</div>
+                    <div class="layer-components">
+                        <span class="component">生产管理系统</span>
+                        <span class="component">宇树机器人</span>
+                        <span class="component">知识库（向量数据库）</span>
+                        <span class="component">历史案例库</span>
+                        <span class="component">标准导则库</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🔄 数据流闭环</h2>
+            <div class="data-flow">
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <div class="flow-step-number">1️⃣</div>
+                        <div class="flow-step-title">监控数据采集</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">2️⃣</div>
+                        <div class="flow-step-title">异常识别预警</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">3️⃣</div>
+                        <div class="flow-step-title">AI 分析溯源</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">4️⃣</div>
+                        <div class="flow-step-title">检修建议生成</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">5️⃣</div>
+                        <div class="flow-step-title">机器人巡视执行</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">6️⃣</div>
+                        <div class="flow-step-title">结果反馈优化</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🔑 核心技术</h2>
+            <div class="core-tech">
+                <div class="tech-card">
+                    <div class="tech-icon">🤖</div>
+                    <div class="tech-title">OpenClaw 多 Agent 协同</div>
+                    <div class="tech-desc">基于 OpenClaw 框架，实现监盘、机器人、交互三个专用 Agent 的分工协作</div>
+                    <ul class="tech-list">
+                        <li>独立会话隔离</li>
+                        <li>事件总线协调</li>
+                        <li>任务自动编排</li>
+                        <li>审批流集成</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">🔌</div>
+                    <div class="tech-title">CLI 标准化集成</div>
+                    <div class="tech-desc">统一的 CLI 命令规范，快速集成生产管理系统和宇树机器人</div>
+                    <ul class="tech-list">
+                        <li>命令标准化</li>
+                        <li>响应解析器</li>
+                        <li>错误处理</li>
+                        <li>会话保持</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">🧠</div>
+                    <div class="tech-title">RAG + VLM 双引擎</div>
+                    <div class="tech-desc">知识库检索增强生成 + 视觉语言模型，支撑智能决策</div>
+                    <ul class="tech-list">
+                        <li>向量数据库</li>
+                        <li>标准导则检索</li>
+                        <li>历史案例匹配</li>
+                        <li>截图智能分析</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🔒 安全与权限</h2>
+            <div class="core-tech">
+                <div class="tech-card">
+                    <div class="tech-icon">🔐</div>
+                    <div class="tech-title">认证与授权</div>
+                    <div class="tech-desc">多层认证机制，细粒度权限控制</div>
+                    <ul class="tech-list">
+                        <li>OAuth 2.0 认证</li>
+                        <li>RBAC 权限模型</li>
+                        <li>操作审计日志</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">🛡️</div>
+                    <div class="tech-title">数据安全</div>
+                    <div class="tech-desc">全链路数据加密，敏感信息脱敏</div>
+                    <ul class="tech-list">
+                        <li>传输加密 (TLS)</li>
+                        <li>存储加密</li>
+                        <li>敏感数据脱敏</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-icon">✅</div>
+                    <div class="tech-title">审批闭环</div>
+                    <div class="tech-desc">关键操作需人工审批，确保安全可控</div>
+                    <ul class="tech-list">
+                        <li>检修建议确认</li>
+                        <li>机器人派出审批</li>
+                        <li>系统推送确认</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

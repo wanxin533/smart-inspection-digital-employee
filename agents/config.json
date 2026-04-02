@@ -1,0 +1,22 @@
+{
+  "agents": {
+    "solution": {
+      "name": "解决方案助理",
+      "dingtalkClientId": "dingbcuozvqlgymsidhc",
+      "skills": ["solution-design", "proposal-generation"],
+      "model": "alibaba/qwen3.5-plus"
+    },
+    "market-director": {
+      "name": "市场总监助理",
+      "dingtalkClientId": "dingw6abjhndkg94oosn",
+      "skills": ["market-analysis", "content-creation"],
+      "model": "alibaba/qwen3.5-plus"
+    },
+    "tech-director": {
+      "name": "技术总监助理",
+      "dingtalkClientId": "dingotwvoiup0dkhzaox",
+      "skills": ["tech-research", "architecture-design"],
+      "model": "alibaba/qwen3.5-plus"
+    }
+  }
+}

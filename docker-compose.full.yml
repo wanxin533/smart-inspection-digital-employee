@@ -1,0 +1,88 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: si-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: smart_inspection
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./config/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql
+    networks:
+      - si-network
+    restart: always
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: si-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - si-network
+    restart: always
+
+  backend:
+    build: ./src/backend
+    container_name: si-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/smart_inspection
+      SPRING_REDIS_HOST: redis
+    networks:
+      - si-network
+    restart: always
+
+  frontend:
+    build: ./src/frontend
+    container_name: si-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - si-network
+    restart: always
+
+  model-server:
+    build: ./model-server
+    container_name: si-model-server
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - si-network
+    restart: always
+
+  neo4j:
+    image: neo4j:5
+    container_name: si-neo4j
+    environment:
+      NEO4J_AUTH: neo4j/admin123
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j-data:/data
+    networks:
+      - si-network
+    restart: always
+
+volumes:
+  mysql-data:
+  neo4j-data:
+
+networks:
+  si-network:
+    driver: bridge

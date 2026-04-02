@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能巡视数字员工 - Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        
+        /* 顶部导航栏 */
+        .navbar { 
+            background: rgba(0,0,0,0.2); 
+            backdrop-filter: blur(10px);
+            padding: 15px 0; 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .navbar-content { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 20px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .navbar-logo { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar-menu { 
+            display: flex; 
+            gap: 10px; 
+            list-style: none; 
+        }
+        .navbar-menu a { 
+            color: white; 
+            text-decoration: none; 
+            padding: 10px 20px; 
+            border-radius: 25px; 
+            font-weight: 500;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.1);
+        }
+        .navbar-menu a:hover { 
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+        .navbar-menu a.active { 
+            background: white; 
+            color: #667eea;
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; color: white; margin-bottom: 60px; }
+        .header h1 { font-size: 48px; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { font-size: 20px; opacity: 0.9; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 60px; }
+        .card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); transition: transform 0.3s; }
+        .card:hover { transform: translateY(-10px); }
+        .card-icon { font-size: 64px; margin-bottom: 20px; }
+        .card h3 { font-size: 28px; color: #333; margin-bottom: 15px; }
+        .card p { color: #666; line-height: 1.8; margin-bottom: 20px; }
+        .card-features { list-style: none; }
+        .card-features li { padding: 8px 0; color: #555; border-bottom: 1px solid #eee; }
+        .card-features li:last-child { border-bottom: none; }
+        .card-features li:before { content: "✅ "; }
+        .cta { text-align: center; color: white; }
+        .cta h2 { font-size: 36px; margin-bottom: 30px; }
+        .cta-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 18px; transition: all 0.3s; display: inline-block; }
+        .btn-primary { background: white; color: #667eea; }
+        .btn-primary:hover { background: #f0f0f0; transform: scale(1.05); }
+        .btn-secondary { background: transparent; border: 2px solid white; color: white; }
+        .btn-secondary:hover { background: white; color: #667eea; }
+        .footer { text-align: center; color: white; margin-top: 60px; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html" class="navbar-logo">
+                🤖 智能巡视数字员工
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html" class="active">🏠 首页</a></li>
+                <li><a href="monitor.html">👁️ 系统监盘</a></li>
+                <li><a href="robot.html">🤖 机器人操控</a></li>
+                <li><a href="interaction.html">🧠 用户交互</a></li>
+                <li><a href="architecture.html">🏗️ 技术架构</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>🤖 智能巡视数字员工</h1>
+            <p>基于 OpenClaw 理念的变电站智能巡视解决方案</p>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon">👁️</div>
+                <h3>能力一：系统监盘</h3>
+                <p>24 小时自动监控系统运行状态，自主触发异常分析</p>
+                <ul class="card-features">
+                    <li>CLI 集成生产管理系统</li>
+                    <li>实时运行指标监控</li>
+                    <li>预警自动触发分析</li>
+                    <li>结合标准导则溯源</li>
+                    <li>生成检修建议</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🤖</div>
+                <h3>能力二：机器人操控</h3>
+                <p>指挥宇树机器人开展巡视，结果自动分析闭环</p>
+                <ul class="card-features">
+                    <li>CLI 操控宇树机器人</li>
+                    <li>自动巡视任务下发</li>
+                    <li>巡视结果查看分析</li>
+                    <li>优化检修建议</li>
+                    <li>巡视 - 检修闭环</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🧠</div>
+                <h3>能力三：用户交互中枢</h3>
+                <p>设备截图智能分析，引导用户协同决策</p>
+                <ul class="card-features">
+                    <li>截图上传 AI 分析</li>
+                    <li>数据不足主动引导</li>
+                    <li>人机协同分析</li>
+                    <li>建议生成确认</li>
+                    <li>推送系统执行</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="cta">
+            <h2>📊 预期价值</h2>
+            <div class="cards">
+                <div class="card" style="padding: 20px;">
+                    <h3 style="font-size: 48px; color: #667eea;">96%</h3>
+                    <p>异常发现时效提升</p>
+                </div>
+                <div class="card" style="padding: 20px;">
+                    <h3 style="font-size: 48px; color: #764ba2;">40%</h3>
+                    <p>运维人力成本降低</p>
+                </div>
+                <div class="card" style="padding: 20px;">
+                    <h3 style="font-size: 48px; color: #667eea;">120 万</h3>
+                    <p>年度经济价值/站</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 智能巡视数字员工 | 基于 OpenClaw 多 Agent 架构</p>
+        </div>
+    </div>
+</body>
+</html>

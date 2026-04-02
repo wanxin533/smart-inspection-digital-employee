@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统监盘 Demo - 智能巡视数字员工</title>
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        body { font-family: 'Microsoft YaHei', sans-serif; background: #f5f7fa; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        .dashboard { display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
+        .sidebar { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .station-list { list-style: none; }
+        .station-item { padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.3s; }
+        .station-item:hover { background: #f9f9f9; }
+        .station-item.active { background: #e8f4fd; border-left: 4px solid #667eea; }
+        .station-name { font-weight: bold; margin-bottom: 5px; }
+        .station-status { font-size: 12px; color: #666; }
+        .status-normal { color: #52c41a; }
+        .status-warning { color: #faad14; }
+        .status-alert { color: #ff4d4f; }
+        .main { background: white; border-radius: 10px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .station-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .station-title { font-size: 28px; color: #333; }
+        .station-badge { padding: 8px 16px; border-radius: 20px; font-size: 14px; }
+        .badge-normal { background: #f6ffed; color: #52c41a; }
+        .badge-warning { background: #fffbe6; color: #faad14; }
+        .badge-alert { background: #fff1f0; color: #ff4d4f; }
+        .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .metric-card { background: #f9f9f9; border-radius: 10px; padding: 20px; text-align: center; }
+        .metric-value { font-size: 36px; font-weight: bold; color: #667eea; margin-bottom: 10px; }
+        .metric-label { color: #666; font-size: 14px; }
+        .alert-section { margin-top: 30px; }
+        .alert-title { font-size: 20px; color: #333; margin-bottom: 20px; }
+        .alert-item { background: #fff1f0; border: 1px solid #ffa39e; border-radius: 8px; padding: 20px; margin-bottom: 15px; }
+        .alert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .alert-type { font-weight: bold; color: #ff4d4f; }
+        .alert-time { color: #666; font-size: 14px; }
+        .alert-details { color: #333; line-height: 1.8; margin-bottom: 15px; }
+        .alert-actions { display: flex; gap: 10px; }
+        .btn { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-outline { background: white; border: 1px solid #667eea; color: #667eea; }
+        .btn-outline:hover { background: #667eea; color: white; }
+        .analysis-flow { background: #f0f5ff; border-radius: 10px; padding: 20px; margin-top: 20px; }
+        .flow-title { font-size: 18px; color: #333; margin-bottom: 15px; }
+        .flow-steps { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .flow-step { background: white; padding: 15px 20px; border-radius: 8px; flex: 1; min-width: 150px; text-align: center; }
+        .flow-arrow { font-size: 24px; color: #667eea; }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html" class="navbar-logo">
+                🤖 智能巡视数字员工
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html">🏠 首页</a></li>
+                <li><a href="monitor.html" class="active">👁️ 系统监盘</a></li>
+                <li><a href="robot.html">🤖 机器人操控</a></li>
+                <li><a href="interaction.html">🧠 用户交互</a></li>
+                <li><a href="architecture.html">🏗️ 技术架构</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard">
+            <div class="sidebar">
+                <h3 style="margin-bottom: 20px;">📍 变电站列表</h3>
+                <ul class="station-list">
+                    <li class="station-item active">
+                        <div class="station-name">220kV 朝阳变电站</div>
+                        <div class="station-status">状态：<span class="status-warning">预警</span></div>
+                    </li>
+                    <li class="station-item">
+                        <div class="station-name">110kV 科技园变电站</div>
+                        <div class="station-status">状态：<span class="status-normal">正常</span></div>
+                    </li>
+                    <li class="station-item">
+                        <div class="station-name">500kV 北苑变电站</div>
+                        <div class="station-status">状态：<span class="status-normal">正常</span></div>
+                    </li>
+                    <li class="station-item">
+                        <div class="station-name">220kV 南湖变电站</div>
+                        <div class="station-status">状态：<span class="status-alert">告警</span></div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="main">
+                <div class="station-header">
+                    <h2 class="station-title">220kV 朝阳变电站</h2>
+                    <span class="station-badge badge-warning">⚠️ 预警状态</span>
+                </div>
+
+                <div class="metrics">
+                    <div class="metric-card">
+                        <div class="metric-value">38.5°C</div>
+                        <div class="metric-label">主变 A 相温度</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">225.3kV</div>
+                        <div class="metric-label">高压侧电压</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">156A</div>
+                        <div class="metric-label">负载电流</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">92%</div>
+                        <div class="metric-label">健康评分</div>
+                    </div>
+                </div>
+
+                <div class="alert-section">
+                    <h3 class="alert-title">🔔 预警信息</h3>
+                    <div class="alert-item">
+                        <div class="alert-header">
+                            <span class="alert-type">⚠️ 主变温度异常预警</span>
+                            <span class="alert-time">2026-03-31 11:35:22</span>
+                        </div>
+                        <div class="alert-details">
+                            <strong>设备:</strong> #1 主变 A 相<br>
+                            <strong>现象:</strong> 顶层油温 38.5°C，较昨日同期升高 5.2°C，接近注意值 40°C<br>
+                            <strong>影响:</strong> 可能影响主变负载能力，需关注温度变化趋势
+                        </div>
+                        <div class="alert-actions">
+                            <button class="btn btn-primary" onclick="triggerAnalysis()">🔍 触发分析</button>
+                            <button class="btn btn-outline" onclick="dispatchRobot()">🤖 派出机器人</button>
+                            <button class="btn btn-outline">📊 查看历史</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analysis-flow" id="analysisFlow" style="display: none;">
+                    <h4 class="flow-title">🔄 自动分析流程</h4>
+                    <div class="flow-steps">
+                        <div class="flow-step">1️⃣ 采集运行数据</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">2️⃣ 检索标准导则</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">3️⃣ 匹配历史案例</div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">4️⃣ 生成检修建议</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function triggerAnalysis() {
+            document.getElementById('analysisFlow').style.display = 'block';
+            alert('✅ 已触发自动分析流程！\n\n数字员工正在：\n1. 采集主变运行数据\n2. 检索《电力变压器运行规程》\n3. 匹配历史类似案例\n4. 生成检修建议\n\n预计 30 秒后完成分析...');
+        }
+
+        function dispatchRobot() {
+            alert('🤖 已派出宇树机器人！\n\n巡视任务：\n- 红外测温：主变 A 相\n- 可见光拍照：油位计、压力表\n- 噪声检测：主变本体\n\n预计 15 分钟后返回巡视结果...');
+        }
+    </script>
+</body>
+</html>

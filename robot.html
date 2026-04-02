@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机器人操控 Demo - 智能巡视数字员工</title>
+    <link rel="stylesheet" href="css/common.css">
+    <style>
+        body { background: #f5f7fa; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        .page-title { font-size: 32px; color: #333; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
+        .card { background: white; border-radius: 10px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .card-title { font-size: 20px; color: #333; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .robot-view { background: #000; border-radius: 10px; height: 400px; display: flex; align-items: center; justify-content: center; color: white; position: relative; overflow: hidden; }
+        .robot-view::before { content: "📹 机器人实时视角"; position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 5px; font-size: 14px; }
+        .robot-placeholder { font-size: 120px; opacity: 0.3; }
+        .control-panel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .control-btn { padding: 20px; border: 2px solid #667eea; border-radius: 10px; background: white; color: #667eea; font-size: 16px; cursor: pointer; transition: all 0.3s; }
+        .control-btn:hover { background: #667eea; color: white; transform: scale(1.05); }
+        .control-btn:active { transform: scale(0.95); }
+        .task-list { list-style: none; }
+        .task-item { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .task-item:last-child { border-bottom: none; }
+        .task-info h4 { color: #333; margin-bottom: 8px; }
+        .task-info p { color: #666; font-size: 14px; }
+        .task-status { padding: 6px 12px; border-radius: 20px; font-size: 12px; }
+        .status-pending { background: #f0f0f0; color: #666; }
+        .status-running { background: #e6f7ff; color: #1890ff; }
+        .status-completed { background: #f6ffed; color: #52c41a; }
+        .btn { padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-size: 16px; font-weight: bold; transition: all 0.3s; margin-right: 10px; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102,126,234,0.4); }
+        .btn-success { background: #52c41a; color: white; }
+        .btn-success:hover { background: #45a618; }
+        .result-section { margin-top: 30px; }
+        .result-card { background: #f9f9f9; border-radius: 10px; padding: 20px; margin-bottom: 15px; }
+        .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .result-title { font-size: 18px; color: #333; }
+        .result-time { color: #666; font-size: 14px; }
+        .result-images { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .result-image { background: #ddd; height: 100px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+        .result-analysis { background: white; border-radius: 8px; padding: 15px; }
+        .analysis-item { margin-bottom: 10px; }
+        .analysis-label { color: #666; font-size: 14px; margin-bottom: 5px; }
+        .analysis-value { color: #333; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="index.html" class="navbar-logo">
+                🤖 智能巡视数字员工
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html">🏠 首页</a></li>
+                <li><a href="monitor.html">👁️ 系统监盘</a></li>
+                <li><a href="robot.html" class="active">🤖 机器人操控</a></li>
+                <li><a href="interaction.html">🧠 用户交互</a></li>
+                <li><a href="architecture.html">🏗️ 技术架构</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">🤖 机器人操控中心</h1>
+
+        <div class="grid">
+            <div class="card">
+                <h2 class="card-title">📹 实时视角</h2>
+                <div class="robot-view">
+                    <div class="robot-placeholder">🤖</div>
+                    <div style="position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); padding: 10px 15px; border-radius: 8px; font-size: 14px;">
+                        <div>📍 当前位置：220kV 朝阳变电站 #1 主变区</div>
+                        <div>🔋 电量：87%</div>
+                        <div>📶 信号：强</div>
+                    </div>
+                </div>
+                <div class="control-panel" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
+                    <button class="control-btn" onclick="controlRobot('红外测温')" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; border: none;">
+                        🌡️ 红外测温
+                        <div style="font-size: 12px; opacity: 0.9; margin-top: 5px;">A/B/C 三相温度检测</div>
+                    </button>
+                    <button class="control-btn" onclick="controlRobot('外观检测')" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border: none;">
+                        👁️ 外观检测
+                        <div style="font-size: 12px; opacity: 0.9; margin-top: 5px;">可见光高清拍照</div>
+                    </button>
+                    <button class="control-btn" onclick="controlRobot('漏油检测')" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; border: none;">
+                        💧 漏油检测
+                        <div style="font-size: 12px; opacity: 0.9; margin-top: 5px;">油位计/压力表读数</div>
+                    </button>
+                    <button class="control-btn" onclick="controlRobot('主体拍照')" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; border: none;">
+                        📸 主体拍照
+                        <div style="font-size: 12px; opacity: 0.9; margin-top: 5px;">设备全景照片</div>
+                    </button>
+                    <button class="control-btn" onclick="controlRobot('套管拍照')" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; border: none;">
+                        🎯 套管拍照
+                        <div style="font-size: 12px; opacity: 0.9; margin-top: 5px;">套管细节特写</div>
+                    </button>
+                    <button class="control-btn" onclick="controlRobot('噪声检测')" style="background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); color: #333; border: none;">
+                        🔊 噪声检测
+                        <div style="font-size: 12px; opacity: 0.9; margin-top: 5px;">运行声音采集</div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">📋 巡视任务</h2>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-info">
+                            <h4>#1 主变红外测温</h4>
+                            <p>220kV 朝阳变电站 · A/B/C 三相</p>
+                        </div>
+                        <span class="task-status status-running">🔄 执行中</span>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-info">
+                            <h4>110kV 开关室可见光巡视</h4>
+                            <p>220kV 朝阳变电站 · 开关柜</p>
+                        </div>
+                        <span class="task-status status-pending">⏳ 待执行</span>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-info">
+                            <h4>主变油位计读数识别</h4>
+                            <p>220kV 朝阳变电站 · #1 主变</p>
+                        </div>
+                        <span class="task-status status-completed">✅ 已完成</span>
+                    </li>
+                </ul>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="dispatchRobot()">🚀 派出机器人</button>
+                    <button class="btn btn-success" onclick="recallRobot()">🏠 召回机器人</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h2 class="card-title">📊 巡视结果分析</h2>
+            <div class="result-card">
+                <div class="result-header">
+                    <h3 class="result-title">#1 主变红外测温结果</h3>
+                    <span class="result-time">2026-03-31 11:45:30</span>
+                </div>
+                <div class="result-images">
+                    <div class="result-image">📸</div>
+                    <div class="result-image">📸</div>
+                    <div class="result-image">📸</div>
+                    <div class="result-image">📸</div>
+                </div>
+                <div class="result-analysis">
+                    <div class="analysis-item">
+                        <div class="analysis-label">🌡️ A 相温度</div>
+                        <div class="analysis-value">38.5°C（注意值：40°C）⚠️ 接近注意值</div>
+                    </div>
+                    <div class="analysis-item">
+                        <div class="analysis-label">🌡️ B 相温度</div>
+                        <div class="analysis-value">35.2°C（正常）</div>
+                    </div>
+                    <div class="analysis-item">
+                        <div class="analysis-label">🌡️ C 相温度</div>
+                        <div class="analysis-value">34.8°C（正常）</div>
+                    </div>
+                    <div class="analysis-item">
+                        <div class="analysis-label">💡 分析结论</div>
+                        <div class="analysis-value">A 相温度偏高，建议加强监视，安排检修检查</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function controlRobot(action) {
+            const actions = {
+                '红外测温': {
+                    icon: '🌡️',
+                    duration: '3 分钟',
+                    result: 'A 相：38.5°C | B 相：35.2°C | C 相：34.8°C',
+                    alert: '⚠️ A 相温度偏高（注意值 40°C）'
+                },
+                '外观检测': {
+                    icon: '👁️',
+                    duration: '2 分钟',
+                    result: '拍摄高清照片 12 张',
+                    alert: '✅ 外观正常，无异常'
+                },
+                '漏油检测': {
+                    icon: '💧',
+                    duration: '2 分钟',
+                    result: '油位：正常 | 压力：0.45MPa',
+                    alert: '✅ 无漏油迹象'
+                },
+                '主体拍照': {
+                    icon: '📸',
+                    duration: '1 分钟',
+                    result: '拍摄设备全景照片 3 张',
+                    alert: '✅ 已存档'
+                },
+                '套管拍照': {
+                    icon: '🎯',
+                    duration: '1 分钟',
+                    result: '拍摄套管细节照片 6 张',
+                    alert: '✅ 已存档'
+                },
+                '噪声检测': {
+                    icon: '🔊',
+                    duration: '2 分钟',
+                    result: '噪声值：52dB（正常范围 45-60dB）',
+                    alert: '✅ 运行声音正常'
+                }
+            };
+
+            const config = actions[action];
+            if (!config) return;
+
+            // 显示执行中状态
+            const btn = event.target.closest('.control-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `⏳ 执行中...<div style="font-size:12px;margin-top:5px">预计 ${config.duration}</div>`;
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
+            // 模拟执行过程
+            setTimeout(() => {
+                // 恢复按钮
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.style.opacity = '1';
+
+                // 显示结果通知
+                const notification = `
+${config.icon} ${action} 完成
+
+⏱️ 耗时：${config.duration}
+📊 结果：${config.result}
+
+${config.alert}
+                `.trim();
+
+                alert(notification);
+
+                // 更新巡视结果区域
+                updateInspectionResults(action, config);
+            }, 2000);
+        }
+
+        function updateInspectionResults(action, config) {
+            const resultsSection = document.querySelector('.result-section');
+            if (!resultsSection) return;
+
+            const timestamp = new Date().toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            const resultCard = document.createElement('div');
+            resultCard.className = 'result-card';
+            resultCard.style.cssText = 'background: #f0f5ff; border-left: 4px solid #667eea; animation: slideIn 0.3s ease-out;';
+            resultCard.innerHTML = `
+                <div class="result-header">
+                    <h3 class="result-title">${config.icon} ${action}</h3>
+                    <span class="result-time">${timestamp}</span>
+                </div>
+                <div class="result-analysis">
+                    <div class="analysis-item">
+                        <div class="analysis-label">📊 检测结果</div>
+                        <div class="analysis-value">${config.result}</div>
+                    </div>
+                    <div class="analysis-item">
+                        <div class="analysis-label">💡 分析结论</div>
+                        <div class="analysis-value">${config.alert}</div>
+                    </div>
+                </div>
+            `;
+
+            resultsSection.insertBefore(resultCard, resultsSection.firstChild);
+        }
+
+        function dispatchRobot() {
+            alert('🤖 机器人已派出！\n\n巡视路线：\n1. #1 主变红外测温\n2. 110kV 开关室可见光巡视\n3. 主变油位计读数识别\n\n预计 30 分钟完成巡视...');
+        }
+
+        function recallRobot() {
+            alert('🏠 机器人正在返回充电站...');
+        }
+    </script>
+
+    <style>
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</body>
+</html>
